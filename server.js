@@ -1,14 +1,26 @@
 'use strict';
 require('dotenv').config();
-const express     = require('express');
-const bodyParser  = require('body-parser');
-const cors        = require('cors');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-const apiRoutes         = require('./routes/api.js');
-const fccTestingRoutes  = require('./routes/fcctesting.js');
-const runner            = require('./test-runner');
+const apiRoutes = require('./routes/api.js');
+const fccTestingRoutes = require('./routes/fcctesting.js');
+const runner = require('./test-runner');
 
 const app = express();
+const helmet = require('helmet');
+
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://code.jquery.com/jquery-2.2.1.min.js"],
+      styleSrc: ["'self'"],
+    },
+  })
+);
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -53,3 +65,4 @@ const listener = app.listen(process.env.PORT || 3000, function () {
 });
 
 module.exports = app; //for testing
+
